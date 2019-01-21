@@ -1,11 +1,53 @@
 import * as React from 'react';
-import {Dialog, showDialog} from "@jupyterlab/apputils";
+import {ReactElementWidget} from "@jupyterlab/apputils";
 
 //import './SubmitTable.css';
 
-export class SubmitTable {
+interface IState {
+  platform: string,
+  endpoint: string,
+  user: string,
+  userinfo: string,
+  framework: string,
+  cpus: number,
+  gpus: number,
+  memory: number,
 
-  public static readonly htmlContent = (
+  cos_endpoint: string,
+  cos_user: string,
+  cos_password: string,
+}
+
+export class SubmitDialogComponent extends React.Component {
+
+  public state: IState = {
+    platform: 'ffdl',
+    endpoint: '##########',
+    user: '##########',
+    userinfo: '##########',
+    framework: 'tensorflow',
+    cpus: 1,
+    gpus: 0,
+    memory: 1,
+
+    cos_endpoint: '##########',
+    cos_user: '##########',
+    cos_password: '##########',
+  }
+
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handlingChange ==> " + event.target.name + " -> " + event.target.value)
+
+    const userInput = event.target.value;
+    this.setState({ userInput });
+  }
+
+  getValue() {
+    return this.state;
+  }
+
+  render() {
+    return (
       <table>
         <tbody>
         <tr>
@@ -112,18 +154,15 @@ export class SubmitTable {
         </tbody>
       </table>
     );
+  }
+}
 
-  static showSubmitDialog() {
-      showDialog({
-        title: 'Submit notebook as a job...',
-        body: SubmitTable.htmlContent,
-        buttons: [Dialog.cancelButton(), Dialog.okButton({ label: 'Submit'})]
-      }).then( result => {
-          console.log('>>>')
-          console.log(result)
-          console.log(document.getElementsByTagName('endpoint'))
-        }
-      );
-    }
 
+/**
+ * Phosphor Widget
+ */
+export class SubmitWidget extends ReactElementWidget {
+  constructor() {
+    super(<SubmitDialogComponent />);
+  }
 }
